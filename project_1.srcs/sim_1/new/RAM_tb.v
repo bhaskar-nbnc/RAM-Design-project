@@ -1,0 +1,36 @@
+`timescale 1ns / 1ps
+module RAM_tb();
+    reg clk, rst, en;
+    reg [3:0] addr;
+    reg [7:0] data_in;
+    wire [7:0] data_out;
+    RAM uut (
+        .clk(clk),
+        .rst(rst),
+        .en(en),
+        .addr(addr),
+        .data_in(data_in),
+        .data_out(data_out)
+    );
+    // Clock generation
+    initial clk = 0;
+    always #5 clk = ~clk;
+    // Stimulus
+    initial begin
+        rst = 1; en = 0; addr = 4'd0; data_in = 8'd0; #15; 
+        rst = 0;
+        // Write operations
+        en = 1;
+        addr = 4'd0; data_in = 8'hA5; #10;
+        addr = 4'd1; data_in = 8'h3C; #10;
+        addr = 4'd2; data_in = 8'h7F; #10;
+        addr = 4'd3; data_in = 8'h55; #10;
+        // Read operations
+        en = 0;
+        addr = 4'd0; #10;
+        addr = 4'd1; #10;
+        addr = 4'd2; #10;
+        addr = 4'd3; #10;
+        $stop;
+    end
+endmodule
